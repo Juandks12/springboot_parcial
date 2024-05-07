@@ -3,7 +3,7 @@
 
 <div class="container">
 	<div>
-		<a type="button" class="btn btn-primary btn-md" href="/add-todo">Adiciobar Usuario</a>
+		<a type="button" class="btn btn-primary btn-md" href="/add-todo">Adicionar Usuario</a>
 	</div>
 	<br>
 	<div class="panel panel-primary">

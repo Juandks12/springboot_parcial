@@ -7,19 +7,27 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 
+import static org.hibernate.criterion.Restrictions.and;
+
 @Configuration
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	@Autowired
 	public void configureGlobalSecurity(AuthenticationManagerBuilder auth) throws Exception {
-		auth.inMemoryAuthentication().passwordEncoder(NoOpPasswordEncoder.getInstance()).withUser("admin")
-				.password("admin").roles("USER", "ADMIN");
+		auth.inMemoryAuthentication()
+				.passwordEncoder(NoOpPasswordEncoder.getInstance())
+				.withUser("rector").password("rector").roles("USER", "ADMIN") //acceder al rol de admin con el usuario rector
+				.and()
+				.withUser("estudiante").password("estudiante").roles("USER");//acceder al rol de usuario con el usuario estudiante
 	}
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http.authorizeRequests().antMatchers("/login", "/h2-console/**").permitAll().antMatchers("/", "/*todo*/**")
-				.access("hasRole('USER')").and().formLogin();
-
+		http.authorizeRequests()
+				.antMatchers("/login", "/h2-console/**").permitAll() // Permitir acceso a ciertas URLs sin autenticación
+				.antMatchers("/estudiante/**").hasRole("USER")
+				.anyRequest().authenticated()
+				.and()
+				.formLogin(); // Configuración de inicio de sesión basado en formulario
 		http.csrf().disable();
 		http.headers().frameOptions().disable();
 	}
